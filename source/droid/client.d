@@ -13,6 +13,7 @@ import droid.gateway,
 struct Config
 {
     string token;
+    bool guildSubscriptions = true;
     API api = null;
     Gateway gateway = null;
     Cache cache = null;
@@ -20,10 +21,11 @@ struct Config
     static Config mergeWithDefaults(Config other)
     {
         auto api     =     other.api is null ? new API(other.token) : other.api;
-        auto gateway = other.gateway is null ? new Gateway(api)     : other.gateway;
+        auto gateway = other.gateway is null ? new Gateway(api, other.guildSubscriptions) : other.gateway;
 
         return Config(
             other.token,
+            other.guildSubscriptions,
             api,
             gateway,
             other.cache is null ? new MemoryCache() : other.cache

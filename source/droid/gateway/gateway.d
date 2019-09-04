@@ -45,6 +45,7 @@ final class Gateway
     private bool heartbeatNeedsACK_;
     private Logger logger_;
     private bool shuttingDown = false;
+    private bool guildSubscriptions_;
 
     private uint lastSeqNum_;
     private string sessionId_;
@@ -55,11 +56,12 @@ final class Gateway
 
     private DispatchDelegate[][EventType] dispatchHandlers_;
 
-    this(API api, in string gatewayUrl = GATEWAY_URL, Logger logger = null)
+    this(API api, in bool guildSubscriptions = true, in string gatewayUrl = GATEWAY_URL, Logger logger = null)
     {
         OPCODE_MAPPING = buildOpcodeHandlersMap();
 
         gatewayUrl_ = gatewayUrl;
+        guildSubscriptions_ = guildSubscriptions;
         api_ = api;
         logger_ = logger ? logger : defaultLogger;
     }
@@ -118,6 +120,7 @@ final class Gateway
 
         opcodeIdentifyHandle(Json([
             "token": Json(api_.token),
+            "guild_subscriptions": Json(guildSubscriptions_),
             "properties": Json([
                 "$os": Json(osName),
                 "$browser": Json("droid"),
